@@ -55,9 +55,15 @@ class PalindromicNumber
     {
         char[] charDigits = String.valueOf(num).toCharArray();
         List<Integer> digits = new ArrayList<Integer>();
+        List<Integer> digitsBad = new ArrayList<Integer>();
         List<Character> newPalindrome = new ArrayList<Character>();
         for (char digit: charDigits) {
-            digits.add(Integer.parseInt("" + digit));
+            digitsBad.add(Integer.parseInt("" + digit));
+        }
+        for (Integer digit: digitsBad) {
+            if (!digits.contains(digit)) {
+                digits.add(digit);
+            }
         }
         Collections.sort(digits);
         if (digits.get(0) == 0) {
@@ -83,6 +89,16 @@ class PalindromicNumber
         }
         return Integer.parseInt(stringPalindrome.toString());
     }
+    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list)
+    {
+        ArrayList<T> newList = new ArrayList<T>();
+        for (T element : list) {
+            if (!newList.contains(element)) {
+                newList.add(element);
+            }
+        }
+        return newList;
+    }
 
 
 }
@@ -92,6 +108,6 @@ public class ExampleTest {
     private static int[][] another =  { { 3, -1, 2, 0}, {2, 2, 1, 2} };
     public static void main(String[] args) {
         PalindromicNumber test = new PalindromicNumber();
-        System.out.println(test.getSmallestPalindrome(4211));
+        System.out.println(test.getSmallestPalindrome(123321));
     }
 }
