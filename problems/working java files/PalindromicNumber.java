@@ -37,61 +37,41 @@ public class PalindromicNumber
      */
     public static int getSmallestPalindrome(int num)
     {
-
-        String s = "" + num;
-        if(s.length()<=1)
-        {
-
-            return num;
+        char[] charDigits = String.valueOf(num).toCharArray();
+        List<Integer> digits = new ArrayList<Integer>();
+        List<Integer> digitsBad = new ArrayList<Integer>();
+        List<Character> newPalindrome = new ArrayList<Character>();
+        for (char digit: charDigits) {
+            digitsBad.add(Integer.parseInt("" + digit));
         }
-
-        if(s.length()==3)
-        {
-            if(s.charAt(0)==s.charAt(1) || s.charAt(0)==s.charAt(2) || s.charAt(1)==s.charAt(2))
-            {
-                String str = "";
-                if(s.charAt(0)==s.charAt(1))
-                {
-                    str = "" + s.charAt(0) + s.charAt(2) + s.charAt(1);
-                }
-                if(s.charAt(1)==s.charAt(2))
-                {
-                    str = "" + s.charAt(1) + s.charAt(0) + s.charAt(2);
-                }
-                if(s.charAt(0)==s.charAt(2))
-                {
-                    str = "" + s.charAt(0) + s.charAt(2) + s.charAt(2);
-                }
-                return Integer.parseInt(str);
+        for (Integer digit: digitsBad) {
+            if (!digits.contains(digit)) {
+                digits.add(digit);
             }
-
         }
-
-        String new_s = s+"#"+new StringBuilder(s).reverse().toString();
-        int[] position = new int[new_s.length()];
-
-        for(int i=1;i<position.length;i++)
-        {
-            int pre_pos = position[i-1];
-            while(pre_pos>0 && new_s.charAt(pre_pos)!=new_s.charAt(i))
-                pre_pos = position[pre_pos-1];
-            position[i] = pre_pos+((new_s.charAt(pre_pos)==new_s.charAt(i))?1:0);
+        Collections.sort(digits);
+        if (digits.get(0) == 0) {
+            int temp = digits.get(1);
+            digits.set(1, digits.get(0));
+            digits.set(0, temp);
         }
-
-        String temp = new StringBuilder(s.substring(position[position.length-1])).reverse().toString()+s;
-        System.out.println("Output: " + temp);
-        int x = Integer.parseInt(temp);
-        return x;
-    }
-
-    public static String getReverse(String str)
-    {
-        String reverse = "";
-        for(int i = str. length() - 1; i >= 0; i--)
-        {
-            reverse = reverse + str. charAt(i);
+        for (Iterator<Integer> it = digits.iterator(); it.hasNext(); ) {
+            Integer newInt = it.next();
+            newPalindrome.add(String.valueOf(newInt).toCharArray()[0]);
         }
-        return reverse;
+        Collections.reverse(digits);
+        if ((digits.size() % 2 == 0)) {
+            digits.remove(0);
+        }
+        for (Iterator<Integer> it = digits.iterator(); it.hasNext(); ) {
+            Integer newInt = it.next();
+            newPalindrome.add(String.valueOf(newInt).toCharArray()[0]);
+        }
+        StringBuilder stringPalindrome = new StringBuilder();
+        for (Iterator<Character> it = newPalindrome.iterator(); it.hasNext(); ) {
+            stringPalindrome.append(it.next());
+        }
+        return Integer.parseInt(stringPalindrome.toString());
     }
 
 
