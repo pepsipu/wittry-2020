@@ -14,109 +14,84 @@ import java.lang.Math;
  * @author  Don Allen
  * @version 2020 Wittry Contest
  */
-class AddEmUp
+
+import java.lang.*;
+import java.util.*;
+/**
+ * @author  Don Allen
+ * @version 2020 Wittry Contest
+ */
+class PalindromicNumber
 {
+    static int NO_OF_CHARS = 256;
     /*
-     *    All 2D arrays will be rectangular.  That is, each row in the array will be the same length
-     *
-     *    i.e., number[m].length = number[n].length, 0 <= m,n < number.length
+     *   n >= 0
      */
-    private int[][] numbers;
-
-    public AddEmUp(int[][] num)
+    public static boolean isPalindromic( int n )
     {
-        numbers = num;
-    }
-
-    /*
-     *    returns a list of all possible sums using two entries from the given row.
-     *
-     *    The returned List<Integer> should have no repeated values
-     */
-    public List<Integer> rowSum(int row)
-    {
-        List<Integer> ans = new ArrayList<Integer>();
-        for (int num: numbers[row]) {
-            for (int num2: numbers[row]) {
-                if (!ans.contains(num2 + num) && num != num2) {
-                    ans.add(num2 + num);
-                }
-            }
-
-        }
-        return ans;
-    }
-
-    /*
-     *  determines the state of row in the 2D array.
-     *  (For this method, repeated sums count multiple times.)
-     *  Remember, a number, x, is even if x % 2 == 0.
-     *  This method returns:
-     *    �EVEN� if there exist more even numbers in the List of all possible sum of two entries in a given row.
-     *    �ODD� if there exist more odd numbers in the List of all possible sum of two entries in a given row.
-     *    �NEITHER� if there exist the same number of even and odd numbers in the List of all possible sum of two entries in a given row.
-     */
-    public String getState(int row)
-    {
-        int even = 0;
+        String str = "" + n;
+        int count[] = new int[NO_OF_CHARS];
+        Arrays.fill(count, 0);
+        for (int i = 0; i < str.length(); i++)
+            count[(int)(str.charAt(i))]++;
         int odd = 0;
-        List<Integer> sums = this.rowSum(row);
-        for (Iterator<Integer> it = sums.iterator(); it.hasNext(); ) {
-            Integer num = it.next();
-            if (num % 2 == 0) {
-                even++;
-            } else {
+        for (int i = 0; i < NO_OF_CHARS; i++)
+        {
+            if ((count[i] & 1) == 1)
                 odd++;
-            }
+
+            if (odd > 1)
+                return false;
         }
-        if (even > odd) return "EVEN";
-        if (odd > even) return "ODD";
-        return "NEITHER";
+        return true;
     }
 
     /*
-     *   returns a List of all values that are contained in every List returned by rowSum(k) method, 0 <= k < numbers.length
-     *   for all rows in the 2D array.
+     *     n >= 0
      *
-     *   That is, a List of all values that would be contain in the rowSum(k) method for all possible values of k.
+     *     you may assume the created palidrome will be a legal int value
      */
-    public List<Integer> commonSum()
+    public static int getSmallestPalindrome(int num)
     {
-        List<List<Integer>> sums = new ArrayList<List<Integer>>();
-        List<Integer> commonSums = new ArrayList<Integer>();
-        for (int i = 0; i < numbers.length; i++) {
-            sums.add(this.rowSum(i));
+        char[] charDigits = String.valueOf(num).toCharArray();
+        List<Integer> digits = new ArrayList<Integer>();
+        List<Character> newPalindrome = new ArrayList<Character>();
+        for (char digit: charDigits) {
+            digits.add(Integer.parseInt("" + digit));
         }
-        List<Integer> allSums = new ArrayList<Integer>();
-        for (Iterator<List<Integer>> it = sums.iterator(); it.hasNext(); ) {
-            List<Integer> sum = it.next();
-            allSums.addAll(sum);
+        Collections.sort(digits);
+        if (digits.get(0) == 0) {
+            int temp = digits.get(1);
+            digits.set(1, digits.get(0));
+            digits.set(0, temp);
         }
-        HashMap<Integer, Integer> occurences = new HashMap<>();
-        for (Iterator<Integer> it = allSums.iterator(); it.hasNext(); ) {
-            occurences.put(it.next(), 0);
+        for (Iterator<Integer> it = digits.iterator(); it.hasNext(); ) {
+            Integer newInt = it.next();
+            newPalindrome.add(String.valueOf(newInt).toCharArray()[0]);
         }
-        for (Iterator<Integer> it = allSums.iterator(); it.hasNext(); ) {
-            Integer next = it.next();
-            occurences.put(next, occurences.get(next) + 1);
+        Collections.reverse(digits);
+        if ((digits.size() % 2 == 0)) {
+            digits.remove(0);
         }
-        Iterator it = occurences.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            if ((Integer) pair.getValue() == numbers.length) {
-                commonSums.add((Integer) pair.getKey());
-            }
-            it.remove(); // avoids a ConcurrentModificationException
+        for (Iterator<Integer> it = digits.iterator(); it.hasNext(); ) {
+            Integer newInt = it.next();
+            newPalindrome.add(String.valueOf(newInt).toCharArray()[0]);
         }
-        return commonSums;
+        StringBuilder stringPalindrome = new StringBuilder();
+        for (Iterator<Character> it = newPalindrome.iterator(); it.hasNext(); ) {
+            stringPalindrome.append(it.next());
+        }
+        return Integer.parseInt(stringPalindrome.toString());
     }
+
+
 }
 
 public class ExampleTest {
     private static int[][] nums = { { 3, 6, 8}, {2, 12, 7}, {8, 6, 4}};
     private static int[][] another =  { { 3, -1, 2, 0}, {2, 2, 1, 2} };
     public static void main(String[] args) {
-        AddEmUp test = new AddEmUp(nums);
-        System.out.println(test.commonSum());
+        PalindromicNumber test = new PalindromicNumber();
+        System.out.println(test.getSmallestPalindrome(4211));
     }
 }
